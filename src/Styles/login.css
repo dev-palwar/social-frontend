@@ -21,6 +21,7 @@
     max-width: 320px;
     max-width: 20rem;
     width: 90%;
+    transform: translateY(10rem);
 }
 
 
@@ -108,7 +109,6 @@ input[type='submit'] {
 .form {
     margin: -14px;
     margin: -0.875rem;
-    transform: translateY(20rem);
 }
 
 .form input[type='password'],

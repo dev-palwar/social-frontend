@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
 import '../Styles/login.css';
+import userRouter from '../Api/Users';
 
 const Login = () => {
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [display, setDisplay] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const signUpHandler = () => {
     setDisplay(!display);
+  };
+
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = event => {
+        setSelectedImage(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedImage(null);
+    }
   };
 
   const handleSubmit = async e => {
@@ -22,29 +37,47 @@ const Login = () => {
       password: password,
     };
 
-    try {
-      const response = await axios.post(
-        `http://localhost:9000/user/${display ? 'login' : 'signup'}`,
-        postData,
-        { withCredentials: true }
-      );
+    const response = await userRouter(
+      'POST',
+      display ? 'login' : 'signup',
+      postData
+    );
 
-      if (response.data.resFromDB) {
-        window.location.reload();
-      } else {
-        toast.error(response.data.message);
-      }
-      console.log(response.data);
-    } catch (error) {
-      console.error('Axios Error:', error);
+    if (response.resFromDB) {
+      window.location.reload();
+    } else {
+      toast.error(response.message);
     }
+    console.log(response);
   };
 
   return (
     <>
       <ToastContainer />
       <div className="grid">
+        <div className="h-44 mb-3 flex justify-center items-center">
+          <div
+            className="h-[9rem] w-[9rem] rounded-full overflow-hidden"
+            style={{ display: display ? 'none' : 'block' }}
+          >
+            <img
+            onClick={()=> document.getElementById('imageInput').click()}
+              src={
+                selectedImage ||
+                'https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000'
+              }
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="form login">
+          <div
+            className="form__field"
+            style={{ display: display ? 'none' : 'block' }}
+          ></div>
+
           <div
             className="form__field"
             style={{ display: display ? 'none' : 'block' }}
@@ -101,8 +134,16 @@ const Login = () => {
             {display ? ' Signup now' : ' Login now'}
           </a>
         </p>
+        <input
+        type="file"
+        id="imageInput"
+        name="image"
+        accept="image/*"
+        onChange={handleImageChange}
+        className='invisible'
+      />
       </div>
-
+      
       <svg xmlns="http://www.w3.org/2000/svg" className="icons">
         <symbol id="arrow-right" viewBox="0 0 1792 1792">
           <path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z" />

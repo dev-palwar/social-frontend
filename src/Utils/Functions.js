@@ -1,3 +1,5 @@
+import jwt_decode from 'jwt-decode';
+
 function formatDateString(dateString) {
   const date = new Date(dateString);
   const options = {
@@ -14,4 +16,14 @@ function formatDateString(dateString) {
 }
 
 
-export default formatDateString;
+function decodeJwtToken(jwtToken) {
+  try {
+    const decodedToken = jwt_decode(jwtToken);
+    return decodedToken;
+  } catch (error) {
+    console.error('Error decoding JWT token:', error);
+    return null; // Return null in case of an error
+  }
+}
+
+export { formatDateString, decodeJwtToken };

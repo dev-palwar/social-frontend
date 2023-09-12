@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import postRouter from '../Api/Post';
-import { ToastContainer, toast } from 'react-toastify';
+import userRouter from '../Api/Users';
 
 const Postcard = ({ name, caption, createdAt, post_id }) => {
 
 
+  // const [user, setUser] = useState([]);
+
   const deletePost = async () => {
-    const response = await postRouter('DELETE', `delete/${post_id}`)
-    toast.success(response.message);
+    await postRouter('DELETE', `delete/${post_id}`);
   };
+
+  // useEffect(() => {
+  //   const getLoggedInUser = async () => {
+  //     const response = await userRouter('GET', `getUser/${loggedInUserId}`);
+  //     console.log(response);
+  //   };
+  //   getLoggedInUser();
+  // }, []);
 
   return (
     <>
-      <ToastContainer />
       <div className="bg-white shadow-md rounded-lg p-4 mt-4 m-auto max-w-[35rem]">
         <div className="flex">
           {/* <img
